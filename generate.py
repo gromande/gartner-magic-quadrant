@@ -3,19 +3,18 @@ from bs4 import BeautifulSoup
 import json
 
 def get_vendors(url):
-    try:
-        capability_page = urlopen(url)
-        soup = BeautifulSoup(capability_page, 'html.parser')
-        table_of_contents = soup.find('ul', {"class": "noindt"})
-        if "Magic Quadrant" in table_of_contents.find_all('li')[1].text:
-            return []
-        list_of_vendors = table_of_contents.find_all('li')[1].ul.find_all('li')[1].ul.find_all('li')
-        vendors = []
-        for item in list_of_vendors:
-            vendors.append(item.string.strip())
-        return vendors
-    except:
-        return []
+    capability_page = urlopen(url)
+    soup = BeautifulSoup(capability_page, 'html.parser')
+    table_of_contents = soup.find('ul', {"class": "noindt"})
+    for item in table_of_contents.find_all('li'):
+        item_text = item.text.strip()
+        if item_text.startswith("Vendor Strengths and Cautions") or item_text.startswith("Vendors\n"):
+            list_of_vendors = item.ul.find_all('li')
+            vendors = []
+            for item in list_of_vendors:
+                vendors.append(item.string.strip())
+            return vendors
+    return []
 
 whitelist = [
     "Access Management"
@@ -38,7 +37,8 @@ whitelist = [
 ]
 
 ROOT = 'https://www.gartner.com'
-#print(get_vendors(ROOT + "/doc/3527219"))
+#print(get_vendors(ROOT + "/doc/3551917"))
+#quit()
 page = urlopen(ROOT + '/technology/research/methodologies/magicQuadrants.jsp')
 soup = BeautifulSoup(page, 'html.parser')
 links = [link for link in soup.find_all('a') if link.get('href').startswith('/doc/code/')]
