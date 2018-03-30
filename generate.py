@@ -16,29 +16,7 @@ def get_vendors(url):
             return vendors
     return []
 
-whitelist = [
-    "Access Management"
-    "Application Security Testing",
-    "Cloud Access Security Brokers",
-    "Endpoint Protection Platforms",
-    "Enterprise Data Loss Prevention",
-    "Enterprise Network Firewalls",
-    "Enterprise Asset Management Software",
-    "High-Security Mobility Management",
-    "Identity Governance and Administration",
-    "Intrusion Detection and Prevention Systems",
-    "Secure Web Gateways",
-    "Security Awareness Computer-Based Training",
-    "Security Information and Event Management",
-    "Software Asset Management Tools",
-    "Unified Threat Management",
-    "Web Application Firewalls",
-    "Wired and Wireless LAN Access Infrastructure",
-]
-
 ROOT = 'https://www.gartner.com'
-#print(get_vendors(ROOT + "/doc/3551917"))
-#quit()
 page = urlopen(ROOT + '/technology/research/methodologies/magicQuadrants.jsp')
 soup = BeautifulSoup(page, 'html.parser')
 links = [link for link in soup.find_all('a') if link.get('href').startswith('/doc/code/')]
@@ -46,8 +24,6 @@ capabilities = {}
 
 for link in links:
     capability_name = link.string
-    #if capability_name not in whitelist:
-    #    continue
     url = ROOT + link.get('href')
     capability = {"url": url}
     capability["vendors"] = get_vendors(url)
